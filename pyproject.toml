@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "pySigma-backend-QRadar"
+name = "pySigma_QRadar_base"
 version = "0.1.0"
-description = "pySigma QRadar backend submodule"
+description = "pySigma QRadar base submodule"
 authors = ["IBM <noaakless@gmail.com>"]
 license = "MIT"
-repository = "https://github.com/IBM/pySigma-backend-QRadar"
+repository = "https://github.com/IBM/pySigma_QRadar_base"
 packages = [
     { include = "sigma" }
 ]
