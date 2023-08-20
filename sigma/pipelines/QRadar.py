@@ -17,11 +17,12 @@ IPV6 = "ipv6"
 
 
 def is_ipv6(val):
-    return ":" in val or (re.match('^[0-9a-zA-Z]+$', val) and re.search('[a-zA-Z]', val))
+    return re.match('^[0-9a-zA-Z:]+$', val) and re.search(
+        r"^([0-9A-Fa-f]{0,4}:){0,7}[0-9A-Fa-f]{0,4}$", val)
 
 
 def is_ipv4(val):
-    return "." in val or re.match('^[0-9]+$', val)
+    return re.match(r"^(?:\d{1,3}\.){0,3}\d{0,3}(?:\/\d{1,2})?$", val)
 
 
 def ip_type(value):
