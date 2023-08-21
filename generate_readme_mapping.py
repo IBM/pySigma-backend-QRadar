@@ -3,7 +3,7 @@ from collections import OrderedDict
 import pandas as pd
 
 
-def generate_readme_mapping(ql):
+def generate_mapping(ql):
 
     def field_mapping():
         mapping = OrderedDict(ql.get("fields"))
