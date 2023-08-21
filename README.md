@@ -3,14 +3,14 @@ This is the QRadar backend submodule for
 [pySigma QRadar AQL](https://github.com/IBM/pySigma-backend-QRadar-aql).
 
 ### Backend
-- [QRadarBackend](sigma/backends/QRadar.py): It provides a base backend for pySigma 
+- [QRadarBackend](QRadarBackend.py): It provides a base backend for pySigma 
   QRadar AQL.
 
 ### Pipelines
-- [QRadar_fields_pipeline](sigma/pipelines/QRadarFields.py): Supports only the 
+- [QRadar_fields_pipeline](QRadarFieldsPipeline.py): Supports only the 
   mapped `Sigma fields` in the field 
 mapping.
-- [QRadar_payload_pipeline](sigma/pipelines/QRadarPayload.py): Uses `payload` search 
+- [QRadar_payload_pipeline](QRadarPayloadPipeline.py): Uses `payload` search 
   instead of unmapped fields.
 
   For payload search, the following value types are not supported:
