@@ -8,8 +8,8 @@ def generate_mapping(ql):
     def field_mapping():
         mapping = OrderedDict(ql.get("fields"))
         mapping_table = pd.DataFrame({
-            '<u>Sigma field</u>': mapping.keys(),
-            '<u>QRadar AQL field</u>': [
+            "<u>Sigma field</u>": mapping.keys(),
+            f"<u>QRadar {ql.get('name')} field</u>": [
                 re.sub(r"[\[\]']", "", str(val)) for val in mapping.values()
             ]})
         return mapping_table.to_markdown(index=False)
@@ -24,10 +24,10 @@ def generate_mapping(ql):
         ]
         mapping_table = pd.DataFrame({
             f"<u>Sigma {log_source}</u>": mapping.keys(),
-            f"<u>{ql.get('log_source_name')} name</u>": [
+            f"<u>QRadar {ql.get('name')} {ql.get('log_source_name')} name</u>": [
                 re.sub(r"[\[\]']", "", str(val)) for val in log_source_device_type
             ],
-            f"<u>{ql.get('log_source_name')} id</u>": [
+            f"<u>QRadar {ql.get('name')} {ql.get('log_source_name')} id</u>": [
                 re.sub(r"[\[\]']", "", str(val)) for val in mapping.values()
             ]}
         )
