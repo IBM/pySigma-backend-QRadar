@@ -10,7 +10,7 @@ from sigma.rule import SigmaDetectionItem, SigmaDetection
 from sigma.types import SigmaRegularExpression, SigmaNull, SigmaCompareExpression, \
     SigmaNumber, SigmaString, SigmaBool, SigmaCIDRExpression, SigmaExpansion
 
-from sigma.pySigma_QRadar_base.QRadarBackend import number_as_string
+from ..pySigma_QRadar_base.QRadarBackend import number_as_string
 
 
 @dataclass
