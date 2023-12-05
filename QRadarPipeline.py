@@ -83,7 +83,11 @@ class SetEventSourceTransformation(SetStateTransformation):
             else:
                 for value in detection_item.value:
                     res = self.device_type_mapping(detection_item.field, value)
-                    if isinstance(res, Iterable) and not isinstance(res, SigmaType):
+                    if (
+                            res
+                            and isinstance(res, Iterable)
+                            and not isinstance(res, SigmaType)
+                    ):
                         device_types.extend(res)
                     else:
                         device_types.append(res)
