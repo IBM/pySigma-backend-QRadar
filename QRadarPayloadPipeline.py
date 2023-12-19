@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from typing import Union, Optional
 
 from sigma.exceptions import SigmaTransformationError
+from sigma.processing.conditions import LogsourceCondition
 from sigma.processing.pipeline import ProcessingPipeline, ProcessingItem
 from sigma.processing.transformations import DetectionItemTransformation, \
     DetectionItemFailureTransformation
@@ -127,10 +128,24 @@ def QRadar_payload_pipeline(
                           field_mapping=field_mapping,
                           number_value_format=number_value_format
                       ),
+                      rule_conditions=[
+                          LogsourceCondition(
+                              product="ibm_qradar_suite",
+                              service="log_insights"
+                          )
+                      ],
+                      rule_condition_negation=True
                   ),
                   ProcessingItem(
                       identifier="using_payload_for_unsupported_fields",
                       transformation=UnsupportedFieldsTransformation(field_mapping),
+                      rule_conditions=[
+                          LogsourceCondition(
+                              product="ibm_qradar_suite",
+                              service="log_insights"
+                          )
+                      ],
+                      rule_condition_negation=True
                   ),
               ] + base_pipeline_items
     )
