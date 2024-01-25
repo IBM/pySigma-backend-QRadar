@@ -57,8 +57,6 @@ class QRadarBackend(TextQueryBackend):
         str] = "'"  # string quoting character (added as escaping character)
     escape_char: ClassVar[
         str] = "'"  # Escaping character for special characrers inside string
-    wildcard_multi: ClassVar[str] = "%"  # Character used as multi-character wildcard
-    wildcard_single: ClassVar[str] = "_"  # Character used as single-character wildcard
     filter_chars: ClassVar[str] = ""  # Characters filtered
     bool_values: ClassVar[Dict[bool, str]] = {
         # Values to which boolean values are mapped.
