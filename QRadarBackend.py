@@ -30,6 +30,8 @@ class QRadarBackend(TextQueryBackend):
     # pipeline is provided? This information can be used by user interface programs
     # like Sigma CLI to warn users about inappropriate usage of the backend.
 
+    parenthesize = True
+
     precedence: ClassVar[Tuple[ConditionItem, ConditionItem, ConditionItem]] = (
         ConditionNOT, ConditionAND, ConditionOR)
     group_expression: ClassVar[
