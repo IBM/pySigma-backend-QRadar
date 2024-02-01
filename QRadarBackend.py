@@ -1,4 +1,5 @@
 import re
+import regex
 
 from sigma.conversion.deferred import DeferredQueryExpression
 from sigma.conversion.state import ConversionState
@@ -121,7 +122,7 @@ class QRadarBackend(TextQueryBackend):
             raise SigmaFeatureNotSupportedByBackendError(
                 "Operator 'not' not supported by the backend")
 
-    def device_type_expression(self, rule, device_type_field_name, device_types):
+    def device_type_expression(self, rule, device_type_field_name, device_types) -> str:
         """Creates an expression to match the rule's log source:
        using 'devicetype' field instead of 'LOGSOURCETYPENAME()' function for better
        performance"""
@@ -143,4 +144,21 @@ class QRadarBackend(TextQueryBackend):
                 list=self.list_separator.join(
                     [str(log_source) for log_source in log_sources_devicetype]),
             )
-        return f'{device_type} {self.and_token} ' if device_type else device_type
+        return (
+            f'{device_type} {self.and_token} ' + '{query}'
+            if device_type else '{query}'
+        )
+
+    def use_parenthesis(self, match_device_type: str, query: str) -> bool:
+        """Wrap query with parenthesis if device_type is not empty and the query
+        contains 'OR' outside parenthesis"""
+        parenthesize = False
+        if not match_device_type.startswith('{') and f' {self.or_token} ' in query:
+            parentheses_pattern = r'\((?:[^()]+|(?R))*\)'
+            or_expressions = [
+                expression for expression in regex.split(parentheses_pattern, query)
+                if f' {self.or_token} ' in expression
+            ]
+            if or_expressions:
+                parenthesize = True
+        return parenthesize
