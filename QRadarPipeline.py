@@ -9,7 +9,7 @@ from sigma.processing.transformations import SetStateTransformation, \
 
 # See https://sigmahq-pysigma.readthedocs.io/en/latest/Processing_Pipelines.html
 # for further documentation.
-from sigma.rule import SigmaDetection, SigmaRule
+from sigma.rule import SigmaDetection, SigmaRule, SigmaLogSource
 from sigma.types import SigmaType
 
 IPV4 = "ipv4"
@@ -62,27 +62,39 @@ class SetEventSourceTransformation(SetStateTransformation):
     log_source_mapping: dict
 
     def device_type_mapping(
-            self, field: str, val: SigmaType
-    ) -> Optional[Union[SigmaType, Iterable[SigmaType]]]:
+            self, field: str, val: SigmaType, rule_log_source: SigmaLogSource
+    ) -> Optional[int]:
         log_sources = self.log_source_mapping
         str_value = str(val)
         if field == self.device_type_field_name:
             if str_value in log_sources:
                 return log_sources[str_value]
+            elif rule_log_source in SigmaLogSource(
+                    product='ibm_qradar_suite', service="log_insights"
+            ):
+                return int(str_value)
             warnings.warn(
                 f"'{val}' is not a supported log source type and therefore is being "
                 f"removed"
             )
             return None
 
-    def detection_log_sources(self, detection: SigmaDetection, device_types: list):
+    def detection_log_sources(
+            self, detection: SigmaDetection,
+            device_types: list,
+            rule_log_source: SigmaLogSource
+    ):
         for i, detection_item in enumerate(detection.detection_items):
             if isinstance(detection_item,
                           SigmaDetection):  # recurse into nested detection items
-                self.detection_log_sources(detection_item, device_types)
+                self.detection_log_sources(
+                    detection_item, device_types, rule_log_source
+                )
             else:
                 for value in detection_item.value:
-                    res = self.device_type_mapping(detection_item.field, value)
+                    res = self.device_type_mapping(
+                        detection_item.field, value, rule_log_source
+                    )
                     if res:
                         if isinstance(res, Iterable) and not isinstance(res, SigmaType):
                             device_types.extend(res)
@@ -94,7 +106,10 @@ class SetEventSourceTransformation(SetStateTransformation):
     def apply(self, pipeline, rule: SigmaRule) -> None:
         device_types = []
         for detection in rule.detection.detections.values():
-            log_source = self.detection_log_sources(detection, device_types) or []
+            log_source = (
+                    self.detection_log_sources(detection, device_types, rule.logsource)
+                    or []
+            )
             device_types.extend(log_source)
         self.val = device_types
         super().apply(pipeline, rule)
